@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css');
+
+*{
+  margin: 0;
+}
+
+body{
+  font-family: "Lato", sans-serif;
+  background-color: rgb(20, 19, 19); 
+  color: white;
+}
+
+.logo-container{
+  flex: 2;
+}
+
+.logo{
+  font-family: "Pacifico", serif;
+  color: yellow;
+  font-weight: 400;
+  cursor:default
+  
+}

@@ -3,6 +3,9 @@ import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import Header from '../components/Header.vue';
 import { useStore } from '../store'; 
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase";
+
 
 const router = useRouter();
 const store = useStore();
@@ -13,21 +16,26 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
-const handleRegister = () => {
-  if (password.value !== confirmPassword.value) {
-    alert("Passwords do not match!");
-  } else {
-
-    store.setUser({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value
-    });
-   
-    alert("Account successfully created!");
-    router.push("/movies");
+async function registerByEmail() {
+  try {
+    const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+    await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    alert("There was an error creating a user with email!");
   }
-};
+}
+
+async function registerByGoogle() {
+  try {
+    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    alert("There was an error creating a user with Google!");
+  }
+}
 </script>
 
 <template>

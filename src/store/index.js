@@ -1,5 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 export const useStore = defineStore("store", () => {
   const email = ref("");
