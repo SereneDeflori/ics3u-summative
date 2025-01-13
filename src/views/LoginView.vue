@@ -2,7 +2,7 @@
 import Header from '../components/Header.vue'
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { useStore } from '../store';
+import { useStore } from "../store"
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase"
 
