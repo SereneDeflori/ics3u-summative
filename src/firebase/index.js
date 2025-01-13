@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAOSlUtUpWLiT2a4W7L6MOiUnW3ANj81R0",
+    apiKey: "eb2eed5560b3d22c0bf7bf03c76880f0",
     authDomain: "summative-a4ef2.firebaseapp.com",
     projectId: "summative-a4ef2",
     storageBucket: "summative-a4ef2.firebasestorage.app",

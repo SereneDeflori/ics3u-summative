@@ -44,15 +44,16 @@ async function registerByGoogle() {
     <div class="overlay">
       <div class="form-container">
         <h2>Create an Account</h2>
-        <form @submit.prevent="handleRegister">
+        <form @submit.prevent="registerByEmail()">
           <input v-model="firstName" type="text" placeholder="First Name" class="input-field" required>
           <input v-model="lastName" type="text" placeholder="Last Name" class="input-field" required>
           <input v-model="email" type="email" placeholder="Email" class="input-field" required>
           <input v-model="password" type="password" placeholder="Password" class="input-field" required>
-          <input v-model="confirmPassword" type="password" placeholder="Re-enter Password" class="input-field" required>
-          <button type="submit" class="button-register">Register</button>
+          <input v-model="confirmPassword" type="password" placeholder="Re-Enter Password" class="input-field" required>
+          <button type="submit" class="button register">Register</button>
         </form>
       </div>
+      <button @click="registerByGoogle()" class="button register">Register by Google</button>
     </div>
   </div>
 </template>

@@ -6,6 +6,7 @@ import MoviesView from '../views/MoviesView.vue';
 import DetailView from '../views/DetailView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import CartView from '../views/CartView.vue';
+import { userAuthorized, useStore } from '../store';
 
 const routes = [
     { path: '/', component: HomeView },
