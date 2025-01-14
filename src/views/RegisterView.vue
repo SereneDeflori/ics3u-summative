@@ -1,20 +1,18 @@
 <script setup>
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
 import Header from '../components/Header.vue';
-import { useStore } from '../store'; 
+import { ref } from 'vue';
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase";
-
-
-const router = useRouter();
-const store = useStore();
+import { useRouter } from 'vue-router';
+import { useStore } from "../store"
 
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
+const router = useRouter();
+const store = useStore();
 
 async function registerByEmail() {
   try {
@@ -39,9 +37,11 @@ async function registerByGoogle() {
 </script>
 
 <template>
-  <Header />
+<Header />
   <div class="hero">
     <div class="overlay">
+      <div class="navbar">
+      </div>
       <div class="form-container">
         <h2>Create an Account</h2>
         <form @submit.prevent="registerByEmail()">
@@ -52,12 +52,11 @@ async function registerByGoogle() {
           <input v-model="confirmPassword" type="password" placeholder="Re-Enter Password" class="input-field" required>
           <button type="submit" class="button register">Register</button>
         </form>
-      </div>
-      <button @click="registerByGoogle()" class="button register">Register by Google</button>
+          <button @click="registerByGoogle()" type="submit" class="button register">Register by Google</button>
     </div>
   </div>
+</div>
 </template>
-
 
 
 <style scoped>
