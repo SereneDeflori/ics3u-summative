@@ -24,7 +24,7 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, next) => {
+router.beforeEach((to, from, next) => {
     userAuthorized.then(() => {
       const store = useStore();
   
