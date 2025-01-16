@@ -16,7 +16,7 @@ const store = useStore();
 
 async function registerByEmail() {
   try {
-    const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+    const user= (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
     store.setUser ({
       firstName: firstName.value,
       lastName: lastName.value,
@@ -37,6 +37,10 @@ async function registerByGoogle() {
     alert("There was an error creating a user with Google!");
   }
 }
+
+//add handle register to make sure passwords match!
+
+
 </script>
 
 <template>
