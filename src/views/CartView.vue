@@ -11,9 +11,12 @@ const store = useStore();
       <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" />
       <h1>{{ movie.title }}</h1>
       <button @click="store.cart.delete(key)">Remove</button>
+      <button @click="">Check out</button>
     </div>
   </div>
 </template>
+
+//fix button checkout after
 
 <style scoped>
 h1 {
