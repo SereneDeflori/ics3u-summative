@@ -1,10 +1,10 @@
 <script setup>
-import Header from '../components/Header.vue'
+import Header from '../components/Header.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { useStore } from "../store"
+import { useStore } from "../store";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../firebase"
+import { auth } from "../firebase";
 
 const store = useStore();
 const router = useRouter();
@@ -13,22 +13,45 @@ const password = ref('');
 
 const loginByEmail = async () => {
   try {
-    const user = (await signInWithEmailAndPassword(auth, email.value, password.value)).user;
-    store.user = user;
+    const result = await signInWithEmailAndPassword(auth, email.value, password.value);
+    const user = result.user;
+
+    // Set user details in store
+    store.setUser({
+      email: user.email,
+      firstName: user.displayName?.split(' ')[0] || '',
+      lastName: user.displayName?.split(' ')[1] || '',
+    });
+
     router.push("/movies");
   } catch (error) {
-    console.log(error);
-    alert("There was an error signing in with email!");
+    if (error.code === 'auth/user-not-found') {
+      alert("This email is not registered. Please sign up first.");
+    } else if (error.code === 'auth/wrong-password') {
+      alert("Incorrect password. Please try again.");
+    } else {
+      alert("There was an error signing in with email.");
+    }
+    console.error("Error during email login:", error);
   }
 };
 
 const loginByGoogle = async () => {
   try {
-    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
-    store.user = user;
+    const result = await signInWithPopup(auth, new GoogleAuthProvider());
+    const user = result.user;
+
+    // Set user details in store
+    store.setUser({
+      email: user.email,
+      firstName: user.displayName?.split(' ')[0] || '',
+      lastName: user.displayName?.split(' ')[1] || '',
+    });
+
     router.push("/movies");
   } catch (error) {
-    alert("There was an error signing in with Google!");
+    alert("There was an error signing in with Google.");
+    console.error("Error during Google login:", error);
   }
 };
 </script>
@@ -38,20 +61,22 @@ const loginByGoogle = async () => {
 
   <div class="hero">
     <div class="overlay">
-      <div class="navbar">
-      </div>
+      <div class="navbar"></div>
     </div>
   </div>
+  
   <div class="form-container">
-        <h2>Login to Your Account</h2>
-        <form @submit.prevent="loginByEmail()">
-          <input v-model:="email" type="email" placeholder="Email" class="input-field" required />
-          <input v-model:="password" type="password" placeholder="Password" class="input-field" required />
-          <button type="submit" class="button login">Login by Email</button>
-        </form>
-        <button @click="loginByGoogle()" type="submit" class="button login">Login by Google</button>
-      </div>
+    <h2>Login to Your Account</h2>
+    <form @submit.prevent="loginByEmail">
+      <input v-model="email" type="email" placeholder="Email" class="input-field" required />
+      <input v-model="password" type="password" placeholder="Password" class="input-field" required />
+      <button type="submit" class="button login">Login by Email</button>
+    </form>
+    <button @click="loginByGoogle" type="button" class="button login">Login by Google</button>
+  </div>
 </template>
+
+
 <style scoped>
 .hero {
   position: relative;

@@ -1,13 +1,16 @@
 <script setup>
 import { useStore } from "../store";
-import { computed } from "vue"; 
+import { computed } from "vue";
+import { useRouter } from "vue-router"; // Import the router
 
 const store = useStore();
+const router = useRouter(); // Initialize the router
 
-const isLoggedIn = computed(() => store.isLoggedIn);  
+const isLoggedIn = computed(() => store.isLoggedIn);
 
 const logout = () => {
-  store.logout();  
+  store.logout();
+  router.push("/login"); // Redirect to the login page after logging out
 };
 </script>
 
@@ -42,7 +45,7 @@ const logout = () => {
         </template>
 
         <template v-else>
-          <span>Hello {{ store.firstName }}!</span>  
+          <span>Hello {{ store.firstName }}!</span>
           <RouterLink to="/cart">
             <button class="my-button">Cart</button>
           </RouterLink>
@@ -55,8 +58,6 @@ const logout = () => {
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 .navbar {

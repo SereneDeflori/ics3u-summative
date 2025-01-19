@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, updateProfile, signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
 export const useStore = defineStore("store", () => {
@@ -12,8 +12,8 @@ export const useStore = defineStore("store", () => {
 
   function setUser(userData) {
     email.value = userData.email;
-    firstName.value = userData.firstName;
-    lastName.value = userData.lastName;
+    firstName.value = userData.firstName || "";
+    lastName.value = userData.lastName || "";
     isLoggedIn.value = true;
   }
 
@@ -22,24 +22,50 @@ export const useStore = defineStore("store", () => {
     firstName.value = "";
     lastName.value = "";
     isLoggedIn.value = false;
-    clearCart(); 
+    clearCart();
+    localStorage.removeItem(`cart_${email.value}`); 
+    signOut(auth);
   }
 
-  function updateUserProfile(newFirstName, newLastName) {
+  async function updateUserProfile(newFirstName, newLastName) {
     firstName.value = newFirstName;
     lastName.value = newLastName;
+    if (auth.currentUser) {
+      try {
+        await updateProfile(auth.currentUser, {
+          displayName: `${newFirstName} ${newLastName}`,
+        });
+      } catch (error) {
+        console.error("Error updating user profile:", error);
+      }
+    }
   }
 
   function addToCart(item) {
     cart.value.set(item.id, item);
+    saveCartToLocalStorage();
   }
 
   function removeFromCart(itemId) {
     cart.value.delete(itemId);
+    saveCartToLocalStorage();
   }
 
   function clearCart() {
     cart.value.clear();
+    saveCartToLocalStorage();
+  }
+
+  function saveCartToLocalStorage() {
+    if (email.value) {
+      localStorage.setItem(`cart_${email.value}`, JSON.stringify([...cart.value]));
+    }
+  }
+
+  function checkout() {
+    clearCart();
+    localStorage.removeItem(`cart_${email.value}`);
+    alert("Thank you for your purchase!");
   }
 
   return {
@@ -53,22 +79,24 @@ export const useStore = defineStore("store", () => {
     addToCart,
     removeFromCart,
     updateUserProfile,
-    clearCart, 
+    clearCart,
+    checkout,
   };
-
 });
 
 export const userAuthorized = new Promise((resolve, reject) => {
   onAuthStateChanged(auth, user => {
-    try {
-      const store = useStore();
-      store.user = user;
-      const storedCart = localStorage.getItem(`cart_${store.user.email}`);
-
+    const store = useStore();
+    if (user) {
+      store.setUser(user);
+      const storedCart = localStorage.getItem(`cart_${user.email}`);
       store.cart = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
-      resolve();
-    } catch (error) {
-      reject();
+    } else {
+      store.logout(); 
     }
-  })
-})
+    resolve();
+  });
+});
+
+
+

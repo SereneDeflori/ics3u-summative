@@ -2,21 +2,35 @@
 import { useStore } from '../store';
 
 const store = useStore();
+
+// Remove item from cart using the store method
+function removeFromCart(itemId) {
+  store.removeFromCart(itemId); // Calls the store's removeFromCart function
+}
+
+// Handle checkout process
+function checkout() {
+  store.checkout();  // Calls the store's checkout function which clears the cart
+  alert("Thank you for your purchase!");
+}
 </script>
 
 <template>
   <div class="cart">
     <h1>Your Cart</h1>
+    
+    <!-- Display cart items -->
     <div class="item" v-for="([key, movie]) in store.cart" :key="key">
       <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" />
-      <h1>{{ movie.title }}</h1>
-      <button @click="store.cart.delete(key)">Remove</button>
-      <button @click="">Check out</button>
+      <h2>{{ movie.title }}</h2>
+      <button @click="removeFromCart(key)">Remove</button>
     </div>
+    
+    <!-- Checkout button -->
+    <button v-if="store.cart.size > 0" @click="checkout" class="button checkout">Checkout</button>
+    <p v-else>Your cart is empty.</p>
   </div>
 </template>
-
-//fix button checkout after
 
 <style scoped>
 h1 {

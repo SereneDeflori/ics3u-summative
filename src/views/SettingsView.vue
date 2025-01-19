@@ -1,17 +1,64 @@
 <script setup>
 import { useStore } from '../store'; 
 import { ref } from 'vue';
-import { useRouter } from 'vue-router'; 
+import { useRouter } from 'vue-router';
+import { updateProfile, updatePassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const store = useStore();
 const router = useRouter();
 
 const newFirstName = ref(store.firstName);
 const newLastName = ref(store.lastName);
+const newPassword = ref('');  // For password change
+const confirmPassword = ref('');  // For password confirmation
 
-const changeName = () => {
- 
-  store.updateUserProfile(newFirstName.value, newLastName.value);
+const changeName = async () => {
+  // Check if user is logged in via email
+  if (!store.isLoggedIn || !store.email) {
+    alert("You must be logged in via email to update your profile.");
+    return;
+  }
+
+  try {
+    // Update user profile in Firebase Authentication
+    if (auth.currentUser) {
+      await updateProfile(auth.currentUser, {
+        displayName: `${newFirstName.value} ${newLastName.value}`,
+      });
+    }
+
+    // Update store and local data
+    store.updateUserProfile(newFirstName.value, newLastName.value);
+    alert("Profile updated successfully!");
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    alert("There was an error updating your profile.");
+  }
+};
+
+const changePassword = async () => {
+  // Check if password and confirm password match
+  if (newPassword.value !== confirmPassword.value) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  // Check if user is logged in via email
+  if (!store.isLoggedIn || !store.email) {
+    alert("You must be logged in via email to change your password.");
+    return;
+  }
+
+  try {
+    if (auth.currentUser) {
+      await updatePassword(auth.currentUser, newPassword.value);
+    }
+    alert("Password updated successfully!");
+  } catch (error) {
+    console.error("Error changing password:", error);
+    alert("There was an error changing your password.");
+  }
 };
 </script>
 
@@ -30,11 +77,21 @@ const changeName = () => {
       <input id="email" :value="store.email" type="email" disabled />
 
       <button @click="changeName" class="save-button">Save Changes</button>
+
+      <!-- Password Change Section -->
+      <label for="new-password">New Password:</label>
+      <input id="new-password" v-model="newPassword" type="password" />
+
+      <label for="confirm-password">Confirm Password:</label>
+      <input id="confirm-password" v-model="confirmPassword" type="password" />
+
+      <button @click="changePassword" class="save-button">Change Password</button>
     </div>
 
     <button @click="router.go(-1)" class="go-back-button">Go Back</button>
   </div>
 </template>
+
 
 <style scoped>
 .settings-view {

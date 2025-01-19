@@ -12,28 +12,38 @@ const routes = [
     { path: '/', component: HomeView },
     { path: '/register', component: RegisterView },
     { path: '/login', component: LoginView },
-    { path: '/movies', component: MoviesView },
-    { path: '/movies/:id', component: DetailView },
+    { path: '/movies', component: MoviesView, meta: { requiresAuth: true } },
+    { path: '/movies/:id', component: DetailView, meta: { requiresAuth: true } },
     { path: '/feature', component: HomeView },
-    { path: '/settings', component: SettingsView }, 
-    { path: '/cart', component: CartView },
+    { path: '/settings', component: SettingsView, meta: { requiresAuth: true } }, 
+    { path: '/cart', component: CartView, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 });
 
-router.beforeEach((to, from, next) => {
-    userAuthorized.then(() => {
-      const store = useStore();
-  
-      if (!store.user && to.meta.auth) {
-        next("/login");
-      } else {
-        next();
-      }
-    });
-  });  
+router.beforeEach(async (to, from, next) => {
+    try {
+        // Wait for the user state to be determined (authentication check)
+        await userAuthorized;
+        const store = useStore();
+
+        // Check if the route requires authentication
+        if (to.meta.requiresAuth && !store.isLoggedIn) {
+            // If user is not logged in, redirect to login page
+            next('/login');
+        } else {
+            // Proceed to the next route
+            next();
+        }
+    } catch (error) {
+        console.error('Error during authentication check:', error);
+        // If there's an error in authentication, redirect to login page
+        next('/login');
+    }
+});
 
 export default router;
+
