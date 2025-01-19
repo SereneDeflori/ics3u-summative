@@ -3,14 +3,12 @@ import { useStore } from '../store';
 
 const store = useStore();
 
-// Remove item from cart using the store method
 function removeFromCart(itemId) {
-  store.removeFromCart(itemId); // Calls the store's removeFromCart function
+  store.removeFromCart(itemId); 
 }
 
-// Handle checkout process
 function checkout() {
-  store.checkout();  // Calls the store's checkout function which clears the cart
+  store.checkout();  
   alert("Thank you for your purchase!");
 }
 </script>
@@ -18,8 +16,6 @@ function checkout() {
 <template>
   <div class="cart">
     <h1>Your Cart</h1>
-    
-    <!-- Display cart items -->
     <div class="cart-items">
       <div class="item" v-for="([key, movie]) in store.cart" :key="key">
         <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" />
@@ -27,8 +23,6 @@ function checkout() {
         <button @click="removeFromCart(key)">Remove</button>
       </div>
     </div>
-    
-    <!-- Checkout button -->
     <button v-if="store.cart.size > 0" @click="checkout" class="button checkout">Checkout</button>
     <p v-else>Your cart is empty.</p>
   </div>
@@ -62,10 +56,10 @@ button {
 
 .cart-items {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Grid layout with dynamic column sizes */
-  gap: 20px; /* Space between items */
-  justify-items: center; /* Center the items within each grid cell */
-  align-items: start; /* Align items at the top of their grid cells */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+  gap: 20px; 
+  justify-items: center; 
+  align-items: start; 
 }
 
 .item {
@@ -76,7 +70,7 @@ button {
   padding: 10px;
   border-radius: 8px;
   width: 100%;
-  max-width: 220px; /* Limit the width to avoid stretching */
+  max-width: 220px; 
   margin: 0;
 }
 

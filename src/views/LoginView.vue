@@ -15,8 +15,6 @@ const loginByEmail = async () => {
   try {
     const result = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = result.user;
-
-    // Set user details in store
     store.setUser({
       email: user.email,
       firstName: user.displayName?.split(' ')[0] || '',
@@ -40,8 +38,6 @@ const loginByGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, new GoogleAuthProvider());
     const user = result.user;
-
-    // Set user details in store
     store.setUser({
       email: user.email,
       firstName: user.displayName?.split(' ')[0] || '',

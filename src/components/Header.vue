@@ -1,16 +1,16 @@
 <script setup>
 import { useStore } from "../store";
 import { computed } from "vue";
-import { useRouter } from "vue-router"; // Import the router
+import { useRouter } from "vue-router"; 
 
 const store = useStore();
-const router = useRouter(); // Initialize the router
+const router = useRouter(); 
 
 const isLoggedIn = computed(() => store.isLoggedIn);
 
 const logout = () => {
   store.logout();
-  router.push("/login"); // Redirect to the login page after logging out
+  router.push("/login"); 
 };
 </script>
 
