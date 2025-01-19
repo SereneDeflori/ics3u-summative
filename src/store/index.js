@@ -10,10 +10,12 @@ export const useStore = defineStore("store", () => {
   const isLoggedIn = ref(false);
   const cart = ref(new Map());
 
+
   function setUser(userData) {
     email.value = userData.email;
-    firstName.value = userData.firstName || "";
-    lastName.value = userData.lastName || "";
+    const [fName, lName] = userData.displayName?.split(" ") || ["", ""];
+    firstName.value = fName;
+    lastName.value = lName;
     isLoggedIn.value = true;
   }
 
@@ -23,7 +25,7 @@ export const useStore = defineStore("store", () => {
     lastName.value = "";
     isLoggedIn.value = false;
     clearCart();
-    localStorage.removeItem(`cart_${email.value}`); 
+    localStorage.removeItem(`cart_${email.value}`);
     signOut(auth);
   }
 
@@ -84,19 +86,23 @@ export const useStore = defineStore("store", () => {
   };
 });
 
-export const userAuthorized = new Promise((resolve, reject) => {
-  onAuthStateChanged(auth, user => {
+export const userAuthorized = new Promise((resolve) => {
+  onAuthStateChanged(auth, (user) => {
     const store = useStore();
     if (user) {
-      store.setUser(user);
-      const storedCart = localStorage.getItem(`cart_${user.email}`);
-      store.cart = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
+      user.reload().then(() => {
+        store.setUser(user);
+        const storedCart = localStorage.getItem(`cart_${user.email}`);
+        store.cart = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
+      });
     } else {
       store.logout(); 
     }
     resolve();
   });
 });
+
+
 
 
 

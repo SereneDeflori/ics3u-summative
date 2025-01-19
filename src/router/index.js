@@ -15,7 +15,7 @@ const routes = [
     { path: '/movies', component: MoviesView, meta: { requiresAuth: true } },
     { path: '/movies/:id', component: DetailView, meta: { requiresAuth: true } },
     { path: '/feature', component: HomeView },
-    { path: '/settings', component: SettingsView, meta: { requiresAuth: true } }, 
+    { path: '/settings', component: SettingsView, meta: { requiresAuth: true } },
     { path: '/cart', component: CartView, meta: { requiresAuth: true } },
 ];
 
@@ -46,4 +46,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
+
+
+
 

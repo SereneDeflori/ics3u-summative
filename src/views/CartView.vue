@@ -20,10 +20,12 @@ function checkout() {
     <h1>Your Cart</h1>
     
     <!-- Display cart items -->
-    <div class="item" v-for="([key, movie]) in store.cart" :key="key">
-      <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" />
-      <h2>{{ movie.title }}</h2>
-      <button @click="removeFromCart(key)">Remove</button>
+    <div class="cart-items">
+      <div class="item" v-for="([key, movie]) in store.cart" :key="key">
+        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" />
+        <h2>{{ movie.title }}</h2>
+        <button @click="removeFromCart(key)">Remove</button>
+      </div>
     </div>
     
     <!-- Checkout button -->
@@ -55,21 +57,31 @@ button {
   gap: 2rem;
   height: 100vh;
   padding: 20px;
+  justify-content: flex-start;
+}
+
+.cart-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Grid layout with dynamic column sizes */
+  gap: 20px; /* Space between items */
+  justify-items: center; /* Center the items within each grid cell */
+  align-items: start; /* Align items at the top of their grid cells */
 }
 
 .item {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   background-color: #1a1a1a;
   padding: 10px;
   border-radius: 8px;
-  width: 220px;
-  margin: 10px;
+  width: 100%;
+  max-width: 220px; /* Limit the width to avoid stretching */
+  margin: 0;
 }
 
 img {
-  width: 100%; 
+  width: 100%;
   height: 330px;
   object-fit: cover;
   border-radius: 8px;
@@ -91,7 +103,3 @@ button:hover {
   background-color: #c9302c;
 }
 </style>
-
-
-
-
