@@ -21,7 +21,9 @@ async function registerByEmail() {
       return;
     }
 
-    const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    const user = userCredential.user;
+
     await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
     store.setUser({
       email: user.email,
@@ -42,11 +44,21 @@ async function registerByEmail() {
 
 async function registerByGoogle() {
   try {
-    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account',
+    });
+
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const nameParts = user.displayName?.split(" ") || [];
+    const googleFirstName = nameParts[0] || '';
+    const googleLastName = nameParts[1] || '';
+
     store.setUser({
       email: user.email,
-      firstName: user.displayName?.split(" ")[0] || "",
-      lastName: user.displayName?.split(" ")[1] || "",
+      firstName: googleFirstName,
+      lastName: googleLastName,
     });
 
     router.push("/movies");
@@ -56,6 +68,8 @@ async function registerByGoogle() {
   }
 }
 </script>
+
+
 
 <template>
   <Header />
